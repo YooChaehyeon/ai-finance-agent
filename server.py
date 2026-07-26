@@ -4,9 +4,7 @@ from google import genai
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from langchain_community.document_loaders import PyPDFDirectoryLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
 
 load_dotenv()
@@ -23,7 +21,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-embeddings = HuggingFaceEmbeddings(model_name="jhgan/ko-sroberta-multitask")
+# 구글 API 기반 가벼운 임베딩 사용 (서버 메모리 차지 X)
+embeddings = GoogleGenerativeAIEmbeddings(
+    model="models/text-embedding-004", 
+    google_api_key=api_key
+)
+
 vectorstore = Chroma(persist_directory="data/vectordb", embedding_function=embeddings)
 retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
@@ -52,4 +55,4 @@ def chat(request: ChatRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
