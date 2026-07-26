@@ -4,7 +4,7 @@ from google import genai
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
 load_dotenv()
@@ -21,12 +21,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 구글 API 기반 가벼운 임베딩 사용 (서버 메모리 차지 X)
-embeddings = GoogleGenerativeAIEmbeddings(
-    model="models/text-embedding-004", 
-    google_api_key=api_key
-)
-
+# 원래 벡터 DB와 호환되는 임베딩 모델 사용
+embeddings = HuggingFaceEmbeddings(model_name="jhgan/ko-sroberta-multitask")
 vectorstore = Chroma(persist_directory="data/vectordb", embedding_function=embeddings)
 retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
