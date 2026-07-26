@@ -1,0 +1,10 @@
+# 환경변수 및 보안 (API 키 유출 방지)
+.env
+
+# Vector DB 및 캐시
+data/vectordb/
+__pycache__/
+
+# Python 가상환경 (사용 중인 경우)
+venv/
+.venv/

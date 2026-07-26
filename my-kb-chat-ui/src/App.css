@@ -1,0 +1,273 @@
+html,
+body,
+#root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  max-width: none !important;
+  /* Vite 기본 max-width 제한 해제 */
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #f4f5f7;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* 🟡 상단 배너 */
+.top-banner {
+  background-color: #ffcc00;
+  color: #1e1e1e;
+  font-weight: bold;
+  padding: 10px 20px;
+  font-size: 14px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 메인 구조 */
+.main-content {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  height: calc(100vh - 43px);
+  overflow: hidden;
+}
+
+/* ⬛ 좌측 사이드바 */
+.sidebar {
+  width: 260px;
+  background-color: #1f2937;
+  color: #ffffff;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.new-chat-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #ffcc00;
+  color: #111;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.new-chat-btn:hover {
+  background-color: #e6b800;
+}
+
+.sidebar-title {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.chat-history-item {
+  padding: 10px 12px;
+  background-color: #374151;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: background 0.2s;
+}
+
+.chat-history-item:hover {
+  background-color: #4b5563;
+}
+
+/* ⬜ 메인 대화 영역 */
+.chat-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f9fafb;
+  height: 100%;
+}
+
+/* 채팅 헤더 (수직 정렬) */
+.chat-header {
+  padding: 16px 24px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.header-info h2 {
+  font-size: 18px;
+  color: #111827;
+  margin: 0;
+}
+
+.status-badge {
+  display: inline-block;
+  font-size: 12px;
+  color: #10b981;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* 💬 메시지 대화 리스트 */
+.messages-list {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 한 줄 전체 행 기본 설정 */
+.chat-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 85%;
+  /* 너비를 제한하여 여백 공간 확보 */
+}
+
+/* 🤖 AI 메시지 (왼쪽 정렬) */
+.chat-row.ai {
+  align-self: flex-start;
+  /* 좌측에 착붙 */
+  margin-right: auto;
+}
+
+/* 😊 사용자 메시지 (오른쪽 정렬: 핵심 해결 부분) */
+.chat-row.user {
+  align-self: flex-end;
+  /* 부모 컨테이너 내에서 우측 끝으로 강제 밀기 */
+  flex-direction: row-reverse;
+  /* 아바타 <- 말풍선 순서 */
+  margin-left: auto;
+}
+
+/* 프로필 아바타 */
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ffcc00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.chat-row.user .avatar {
+  background-color: #374151;
+}
+
+/* 이름 + 말풍선 감싸는 박스 */
+.chat-content-box {
+  display: flex;
+  flex-direction: column;
+}
+
+/* AI는 왼쪽 정렬 */
+.chat-row.ai .chat-content-box {
+  align-items: flex-start;
+  text-align: left;
+}
+
+/* 사용자는 오른쪽 정렬 */
+.chat-row.user .chat-content-box {
+  align-items: flex-end;
+  text-align: right;
+}
+
+/* 이름 텍스트 */
+.sender-name {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* 말풍선 스타일 */
+.message-bubble {
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  text-align: left;
+  /* 글자 자체는 가독성을 위해 좌측 정렬 */
+}
+
+/* AI 말풍선: 하얀색 배경, 좌측 모서리 직각 */
+.chat-row.ai .message-bubble {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #1f2937;
+  border-top-left-radius: 2px;
+}
+
+/* 사용자 말풍선: 노란색 배경, 우측 모서리 직각 */
+.chat-row.user .message-bubble {
+  background-color: #ffcc00;
+  color: #111827;
+  font-weight: 500;
+  border-top-right-radius: 2px;
+}
+
+.loading-bubble {
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* ⌨️ 입력창 영역 */
+.input-area {
+  padding: 16px 24px;
+  background-color: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  gap: 10px;
+}
+
+.input-area input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.input-area input:focus {
+  border-color: #ffcc00;
+}
+
+.input-area button {
+  padding: 12px 20px;
+  background-color: #ffcc00;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.input-area button:hover {
+  background-color: #e6b800;
+}
