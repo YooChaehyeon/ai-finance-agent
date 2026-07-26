@@ -21,9 +21,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 구글 API 기반 가벼운 임베딩 사용 (서버 메모리 차지 X)
 embeddings = GoogleGenerativeAIEmbeddings(
-    model="models/text-embedding-004", 
+    model="models/gemini-embedding-001",
     google_api_key=api_key
 )
 
