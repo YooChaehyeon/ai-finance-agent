@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 from google import genai
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
@@ -22,67 +21,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 구글 API 기반 가벼운 임베딩 사용 (서버 메모리 차지 X)
 embeddings = GoogleGenerativeAIEmbeddings(
     model="models/text-embedding-004", 
     google_api_key=api_key
 )
+
 vectorstore = Chroma(persist_directory="data/vectordb", embedding_function=embeddings)
 retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
 class ChatRequest(BaseModel):
     message: str
 
-# 1. 메인 주소 접속 시 바로 대화창 화면(HTML) 출력
-@app.get("/", response_class=HTMLResponse)
-def index():
-    return """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="utf-8">
-        <title>KB 소상공인 금융 AI 에이전트</title>
-        <style>
-            body { font-family: sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
-            #chat-box { height: 350px; overflow-y: scroll; border: 1px solid #eee; padding: 10px; margin-bottom: 10px; }
-            .msg { margin: 8px 0; }
-            .user { text-align: right; color: blue; }
-            .bot { text-align: left; color: green; }
-            input { width: 78%; padding: 10px; }
-            button { width: 18%; padding: 10px; }
-        </style>
-    </head>
-    <body>
-        <h2>🤖 KB 소상공인 금융 AI 에이전트</h2>
-        <div id="chat-box"></div>
-        <input type="text" id="query" placeholder="질문을 입력하세요..." onkeypress="if(event.keyCode==13) sendMsg()">
-        <button onclick="sendMsg()">전송</button>
-
-        <script>
-            async function sendMsg() {
-                const input = document.getElementById('query');
-                const box = document.getElementById('chat-box');
-                const text = input.value;
-                if(!text) return;
-
-                box.innerHTML += `<div class="msg user"><b>나:</b> ${text}</div>`;
-                input.value = '';
-                box.scrollTop = box.scrollHeight;
-
-                const res = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({message: text})
-                });
-                const data = await res.json();
-                box.innerHTML += `<div class="msg bot"><b>AI:</b> ${data.reply}</div>`;
-                box.scrollTop = box.scrollHeight;
-            }
-        </script>
-    </body>
-    </html>
-    """
-
-# 2. 기존 AI 답변 API Endpoint
 @app.post("/api/chat")
 def chat(request: ChatRequest):
     query = request.message
@@ -102,3 +52,7 @@ def chat(request: ChatRequest):
         contents=prompt
     )
     return {"reply": response.text}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
